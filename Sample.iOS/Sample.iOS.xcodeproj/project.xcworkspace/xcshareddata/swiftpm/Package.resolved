@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "anycodable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Flight-School/AnyCodable",
+      "state" : {
+        "revision" : "862808b2070cd908cb04f9aafe7de83d35f81b05",
+        "version" : "0.6.7"
+      }
+    },
+    {
+      "identity" : "popup-sdk-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/loymax/popup-sdk-swift.git",
+      "state" : {
+        "revision" : "302ee4f2916aac989e0288fa0b545796ffd1a547",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 2
+}
