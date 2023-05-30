@@ -14,36 +14,48 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
        
-        var popup = PopupAPI.getPopup(clientId: "123", action: "") {
+        OpenAPIClientAPI.customHeaders =
+        [
+            "Authorization" : "Bearer *******",
+            "Accept" : "application/json",
+            "Content-Type": "application/json"
+        ]
+        
+        var popupReq : PopupRequest = PopupRequest()
+        popupReq.clientId = "10452636"
+        //popupReq.reference = ""
+        popupReq.action = "app_open"
+        var popup = PopupAPI.popup(popupRequest: popupReq) {
             (result, error) in guard result != nil else {
+                print(error?.localizedDescription)
                 return
             }
             var str: String = ""
-            str += "\n\npopupClientIdGet\n"
-            str += "popupId\n"
-            str += "\(result?.popupId)\n"
-            str += "content\n"
-            str += "\(result?.content?.title)\n"
-            str += "\(result?.content?.subtitle)\n"
-            str += "\(result?.content?.imageUrl)\n"
-            str += "\(result?.content?.text)\n"
-            str += "\(result?.content?.button?.name)\n"
-            str += "action\n"
-            str += "\(result?.action)\n"
-            str += "navlink\n"
-            str += "\(result?.navlink)\n"
-            str += "style\n"
-            str += "\(result?.style?.mainColor)\n"
-            str += "\(result?.style?.secondColor)\n\n"
+            guard let result = result else {return}
+            for popup in result {
+                str += "navlink\n"
+                str += "\(popup.navlink)\n"
+                str += "popupId\n"
+                str += "\(popup.popupId)\n"
+                str += "reference\n"
+                str += "\(popup.reference)\n"
+                str += "style\n"
+                str += "\(popup.style?.mainColor)\n"
+                str += "\(popup.style?.secondColor)\n\n"
+            }
+            str += "\nPopup\n"
+            str += "success\n\n"
+
             self.textView.text += str
         }
 
         var confirmReq : ConfirmRequest = ConfirmRequest()
-        confirmReq.popupId = 111
-        confirmReq.clientId = "222"
+        confirmReq.popupId = 1655869443
+        confirmReq.clientId = "10452636"
         confirmReq.sourceId = 333
-        var confirm = PopupAPI.viewPopup(confirmRequest: confirmReq) {
+        var confirm = PopupAPI.popupConfirm(confirmRequest: confirmReq) {
             (result, error) in guard result != nil else {
+                print(error?.localizedDescription)
                 return
             }
             var str: String = ""
@@ -52,4 +64,5 @@ class ViewController: UIViewController {
             self.textView.text += str
         }
     }
+    
 }

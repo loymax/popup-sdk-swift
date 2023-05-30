@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/loymax/popup-sdk-swift.git",
       "state" : {
-        "revision" : "302ee4f2916aac989e0288fa0b545796ffd1a547",
-        "version" : "1.0.0"
+        "revision" : "7b4115acbdada946698f25a0793d5e949f9b315c",
+        "version" : "1.0.4"
       }
     }
   ],

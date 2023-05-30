@@ -10,20 +10,22 @@ import Foundation
 import AnyCodable
 #endif
 
-public final class PopupContent: Codable, JSONEncodable, Hashable {
+public final class PopupResponseContent: Codable, JSONEncodable, Hashable {
 
     public var title: String?
     public var subtitle: String?
     public var imageUrl: String?
     public var text: String?
     public var button: PopupResponseContentButton?
+    public var promocode: String?
 
-    public init(title: String? = nil, subtitle: String? = nil, imageUrl: String? = nil, text: String? = nil, button: PopupResponseContentButton? = nil) {
+    public init(title: String? = nil, subtitle: String? = nil, imageUrl: String? = nil, text: String? = nil, button: PopupResponseContentButton? = nil, promocode: String? = nil) {
         self.title = title
         self.subtitle = subtitle
         self.imageUrl = imageUrl
         self.text = text
         self.button = button
+        self.promocode = promocode
     }
 
     public enum CodingKeys: String, CodingKey, CaseIterable {
@@ -32,6 +34,7 @@ public final class PopupContent: Codable, JSONEncodable, Hashable {
         case imageUrl = "image_url"
         case text
         case button
+        case promocode
     }
 
     // Encodable protocol methods
@@ -43,15 +46,16 @@ public final class PopupContent: Codable, JSONEncodable, Hashable {
         try container.encodeIfPresent(imageUrl, forKey: .imageUrl)
         try container.encodeIfPresent(text, forKey: .text)
         try container.encodeIfPresent(button, forKey: .button)
+        try container.encodeIfPresent(promocode, forKey: .promocode)
     }
 
-    public static func == (lhs: PopupContent, rhs: PopupContent) -> Bool {
+    public static func == (lhs: PopupResponseContent, rhs: PopupResponseContent) -> Bool {
         lhs.title == rhs.title &&
         lhs.subtitle == rhs.subtitle &&
         lhs.imageUrl == rhs.imageUrl &&
         lhs.text == rhs.text &&
-        lhs.button == rhs.button
-        
+        lhs.button == rhs.button &&
+        lhs.promocode == rhs.promocode
     }
 
     public func hash(into hasher: inout Hasher) {
@@ -60,7 +64,6 @@ public final class PopupContent: Codable, JSONEncodable, Hashable {
         hasher.combine(imageUrl?.hashValue)
         hasher.combine(text?.hashValue)
         hasher.combine(button?.hashValue)
-        
+        hasher.combine(promocode?.hashValue)
     }
 }
-

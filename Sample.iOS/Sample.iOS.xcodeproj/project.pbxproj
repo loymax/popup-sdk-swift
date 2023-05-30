@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		750B58DD2A25E1DC009297AC /* LoymaxPopupSdk in Frameworks */ = {isa = PBXBuildFile; productRef = 750B58DC2A25E1DC009297AC /* LoymaxPopupSdk */; };
 		75B1E99129222EC60090CB7E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1E99029222EC60090CB7E /* AppDelegate.swift */; };
 		75B1E99329222EC60090CB7E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1E99229222EC60090CB7E /* SceneDelegate.swift */; };
 		75B1E99529222EC60090CB7E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1E99429222EC60090CB7E /* ViewController.swift */; };
@@ -16,7 +17,6 @@
 		75B1E9A829222EC70090CB7E /* Sample_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1E9A729222EC70090CB7E /* Sample_iOSTests.swift */; };
 		75B1E9B229222EC70090CB7E /* Sample_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1E9B129222EC70090CB7E /* Sample_iOSUITests.swift */; };
 		75B1E9B429222EC70090CB7E /* Sample_iOSUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B1E9B329222EC70090CB7E /* Sample_iOSUITestsLaunchTests.swift */; };
-		75F0C9F4293EC76800AD09A3 /* LoymaxPopupSdk in Frameworks */ = {isa = PBXBuildFile; productRef = 75F0C9F3293EC76800AD09A3 /* LoymaxPopupSdk */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,7 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				75F0C9F4293EC76800AD09A3 /* LoymaxPopupSdk in Frameworks */,
+				750B58DD2A25E1DC009297AC /* LoymaxPopupSdk in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +78,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		750B58CF2A247F65009297AC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		75B1E98429222EC60090CB7E = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +92,7 @@
 				75B1E9A629222EC70090CB7E /* Sample.iOSTests */,
 				75B1E9B029222EC70090CB7E /* Sample.iOSUITests */,
 				75B1E98E29222EC60090CB7E /* Products */,
+				750B58CF2A247F65009297AC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -146,7 +154,7 @@
 			);
 			name = Sample.iOS;
 			packageProductDependencies = (
-				75F0C9F3293EC76800AD09A3 /* LoymaxPopupSdk */,
+				750B58DC2A25E1DC009297AC /* LoymaxPopupSdk */,
 			);
 			productName = Sample.iOS;
 			productReference = 75B1E98D29222EC60090CB7E /* Sample.iOS.app */;
@@ -221,7 +229,7 @@
 			);
 			mainGroup = 75B1E98429222EC60090CB7E;
 			packageReferences = (
-				75F0C9F2293EC76800AD09A3 /* XCRemoteSwiftPackageReference "popup-sdk-swift" */,
+				750B58DB2A25E1DC009297AC /* XCRemoteSwiftPackageReference "popup-sdk-swift" */,
 			);
 			productRefGroup = 75B1E98E29222EC60090CB7E /* Products */;
 			projectDirPath = "";
@@ -606,20 +614,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		75F0C9F2293EC76800AD09A3 /* XCRemoteSwiftPackageReference "popup-sdk-swift" */ = {
+		750B58DB2A25E1DC009297AC /* XCRemoteSwiftPackageReference "popup-sdk-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/loymax/popup-sdk-swift.git";
 			requirement = {
 				kind = exactVersion;
-				version = 1.0.0;
+				version = 1.0.4;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		75F0C9F3293EC76800AD09A3 /* LoymaxPopupSdk */ = {
+		750B58DC2A25E1DC009297AC /* LoymaxPopupSdk */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 75F0C9F2293EC76800AD09A3 /* XCRemoteSwiftPackageReference "popup-sdk-swift" */;
+			package = 750B58DB2A25E1DC009297AC /* XCRemoteSwiftPackageReference "popup-sdk-swift" */;
 			productName = LoymaxPopupSdk;
 		};
 /* End XCSwiftPackageProductDependency section */

@@ -10,7 +10,7 @@ import Foundation
 import AnyCodable
 #endif
 
-public final class PopupContentButton: Codable, JSONEncodable, Hashable {
+public final class PopupResponseContentButton: Codable, JSONEncodable, Hashable {
 
     public var name: String?
 
@@ -29,7 +29,7 @@ public final class PopupContentButton: Codable, JSONEncodable, Hashable {
         try container.encodeIfPresent(name, forKey: .name)
     }
 
-    public static func == (lhs: PopupContentButton, rhs: PopupContentButton) -> Bool {
+    public static func == (lhs: PopupResponseContentButton, rhs: PopupResponseContentButton) -> Bool {
         lhs.name == rhs.name
     }
 

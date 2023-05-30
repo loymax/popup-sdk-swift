@@ -20,8 +20,8 @@ open class PopupAPI {
      - parameter completion: completion handler to receive the data and the error objects
      */
     @discardableResult
-    open class func viewPopup(confirmRequest: ConfirmRequest? = nil, apiResponseQueue: DispatchQueue = OpenAPIClientAPI.apiResponseQueue, completion: @escaping ((_ data: Void?, _ error: Error?) -> Void)) -> RequestTask {
-        return viewPopupWithRequestBuilder(confirmRequest: confirmRequest).execute(apiResponseQueue) { result in
+    open class func popupConfirm(confirmRequest: ConfirmRequest? = nil, apiResponseQueue: DispatchQueue = OpenAPIClientAPI.apiResponseQueue, completion: @escaping ((_ data: Void?, _ error: Error?) -> Void)) -> RequestTask {
+        return popupConfirmWithRequestBuilder(confirmRequest: confirmRequest).execute(apiResponseQueue) { result in
             switch result {
             case .success:
                 completion((), nil)
@@ -41,7 +41,7 @@ open class PopupAPI {
      - parameter confirmRequest: (body)  (optional)
      - returns: RequestBuilder<Void> 
      */
-    open class func viewPopupWithRequestBuilder(confirmRequest: ConfirmRequest? = nil) -> RequestBuilder<Void> {
+    open class func popupConfirmWithRequestBuilder(confirmRequest: ConfirmRequest? = nil) -> RequestBuilder<Void> {
         let localVariablePath = "/popup/confirm"
         let localVariableURLString = OpenAPIClientAPI.basePath + localVariablePath
         let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: confirmRequest)
@@ -58,18 +58,17 @@ open class PopupAPI {
 
         return localVariableRequestBuilder.init(method: "POST", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true)
     }
-
+    
     /**
      Find popup by client_id
      
-     - parameter clientId: (path) Client ID in the Loyalty Program 
-     - parameter action: (query) Target action ID 
+     - parameter popupRequest: (body)  (optional)
      - parameter apiResponseQueue: The queue on which api response is dispatched.
      - parameter completion: completion handler to receive the data and the error objects
      */
     @discardableResult
-    open class func getPopup(clientId: String, action: String, apiResponseQueue: DispatchQueue = OpenAPIClientAPI.apiResponseQueue, completion: @escaping ((_ data: Popup?, _ error: Error?) -> Void)) -> RequestTask {
-        return getPopupWithRequestBuilder(clientId: clientId, action: action).execute(apiResponseQueue) { result in
+    open class func popup(popupRequest: PopupRequest? = nil, apiResponseQueue: DispatchQueue = OpenAPIClientAPI.apiResponseQueue, completion: @escaping ((_ data: [PopupResponse]?, _ error: Error?) -> Void)) -> RequestTask {
+        return popupWithRequestBuilder(popupRequest: popupRequest).execute(apiResponseQueue) { result in
             switch result {
             case let .success(response):
                 completion(response.body, nil)
@@ -81,27 +80,20 @@ open class PopupAPI {
 
     /**
      Find popup by client_id
-     - GET /popup/{clientId}
+     - POST /popup/
      - Returns parameters for rendering popup
      - BASIC:
        - type: http
        - name: bearerAuth
-     - parameter clientId: (path) Client ID in the Loyalty Program 
-     - parameter action: (query) Target action ID 
+     - parameter popupPostRequest: (body)  (optional)
      - returns: RequestBuilder<Popup>
      */
-    open class func getPopupWithRequestBuilder(clientId: String, action: String) -> RequestBuilder<Popup> {
-        var localVariablePath = "/popup/{clientId}"
-        let clientIdPreEscape = "\(APIHelper.mapValueToPathItem(clientId))"
-        let clientIdPostEscape = clientIdPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
-        localVariablePath = localVariablePath.replacingOccurrences(of: "{clientId}", with: clientIdPostEscape, options: .literal, range: nil)
+    open class func popupWithRequestBuilder(popupRequest: PopupRequest? = nil) -> RequestBuilder<[PopupResponse]> {
+        let localVariablePath = "/popup/"
         let localVariableURLString = OpenAPIClientAPI.basePath + localVariablePath
-        let localVariableParameters: [String: Any]? = nil
+        let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: popupRequest)
 
-        var localVariableUrlComponents = URLComponents(string: localVariableURLString)
-        localVariableUrlComponents?.queryItems = APIHelper.mapValuesToQueryItems([
-            "action": (wrappedValue: action.encodeToJSON(), isExplode: true),
-        ])
+        let localVariableUrlComponents = URLComponents(string: localVariableURLString)
 
         let localVariableNillableHeaders: [String: Any?] = [
             :
@@ -109,8 +101,8 @@ open class PopupAPI {
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
 
-        let localVariableRequestBuilder: RequestBuilder<Popup>.Type = OpenAPIClientAPI.requestBuilderFactory.getBuilder()
+        let localVariableRequestBuilder: RequestBuilder<[PopupResponse]>.Type = OpenAPIClientAPI.requestBuilderFactory.getBuilder()
 
-        return localVariableRequestBuilder.init(method: "GET", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true)
+        return localVariableRequestBuilder.init(method: "POST", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true)
     }
 }
