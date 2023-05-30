@@ -67,7 +67,7 @@ open class PopupAPI {
      - parameter completion: completion handler to receive the data and the error objects
      */
     @discardableResult
-    open class func popup(popupRequest: PopupRequest? = nil, apiResponseQueue: DispatchQueue = OpenAPIClientAPI.apiResponseQueue, completion: @escaping ((_ data: Popup?, _ error: Error?) -> Void)) -> RequestTask {
+    open class func popup(popupRequest: PopupRequest? = nil, apiResponseQueue: DispatchQueue = OpenAPIClientAPI.apiResponseQueue, completion: @escaping ((_ data: PopupResponse?, _ error: Error?) -> Void)) -> RequestTask {
         return popupWithRequestBuilder(popupRequest: popupRequest).execute(apiResponseQueue) { result in
             switch result {
             case let .success(response):
@@ -88,7 +88,7 @@ open class PopupAPI {
      - parameter popupPostRequest: (body)  (optional)
      - returns: RequestBuilder<Popup>
      */
-    open class func popupWithRequestBuilder(popupRequest: PopupRequest? = nil) -> RequestBuilder<Popup> {
+    open class func popupWithRequestBuilder(popupRequest: PopupRequest? = nil) -> RequestBuilder<PopupResponse> {
         let localVariablePath = "/popup/"
         let localVariableURLString = OpenAPIClientAPI.basePath + localVariablePath
         let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: popupRequest)
@@ -101,7 +101,7 @@ open class PopupAPI {
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
 
-        let localVariableRequestBuilder: RequestBuilder<Popup>.Type = OpenAPIClientAPI.requestBuilderFactory.getBuilder()
+        let localVariableRequestBuilder: RequestBuilder<PopupResponse>.Type = OpenAPIClientAPI.requestBuilderFactory.getBuilder()
 
         return localVariableRequestBuilder.init(method: "POST", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: true)
     }

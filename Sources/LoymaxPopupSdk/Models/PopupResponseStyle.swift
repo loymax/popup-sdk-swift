@@ -10,7 +10,7 @@ import Foundation
 import AnyCodable
 #endif
 
-public final class PopupStyle: Codable, JSONEncodable, Hashable {
+public final class PopupResponseStyle: Codable, JSONEncodable, Hashable {
 
     public var mainColor: String?
     public var secondColor: String?
@@ -33,7 +33,7 @@ public final class PopupStyle: Codable, JSONEncodable, Hashable {
         try container.encodeIfPresent(secondColor, forKey: .secondColor)
     }
 
-    public static func == (lhs: PopupStyle, rhs: PopupStyle) -> Bool {
+    public static func == (lhs: PopupResponseStyle, rhs: PopupResponseStyle) -> Bool {
         lhs.mainColor == rhs.mainColor &&
         lhs.secondColor == rhs.secondColor
     }
