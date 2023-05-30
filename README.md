@@ -16,13 +16,23 @@ AppDelegate.swift -> application -> `OpenAPIClientAPI.basePath = ""`
 `import LoymaxPopupSdk`  
 
 Пример:  
-`OpenAPIClientAPI.basePath = "https://example.loymax.tech/publicapi"`  
+`OpenAPIClientAPI.basePath = "https://api.loymaxsc.net"`  
 
-Пример использования методов:    
-
-* /popup/{clientId}
+Пример использования методов:
+* перед вызовом методов, необходимо установить ("Bearer *******" можно получить с помощью https://api.loymaxsc.net/token):
    ```swift
-   var popup = PopupAPI.getPopup(clientId: "123", action: "") {
+   OpenAPIClientAPI.customHeaders =
+   [
+       "Authorization" : "Bearer *******",
+       "Accept" : "application/json",
+       "Content-Type": "application/json"
+   ]
+* /popup/
+   ```swift
+   var popupReq : PopupRequest = PopupRequest()
+   popupReq.clientId = "10452636"
+   popupReq.action = "app_open"
+   var popup = PopupAPI.popup(popupRequest: popupReq) {
         (result, error) in guard result != nil else {
             return
         }
@@ -30,8 +40,8 @@ AppDelegate.swift -> application -> `OpenAPIClientAPI.basePath = ""`
 * /popup/confirm
     ```swift
     var confirmReq : ConfirmRequest = ConfirmRequest()
-    confirmReq.popupId = 111
-    confirmReq.clientId = "222"
+    confirmReq.popupId = 1655869443
+    confirmReq.clientId = "10452636"
     confirmReq.sourceId = 333
     var confirm = PopupAPI.viewPopup(confirmRequest: confirmReq) {
         (result, error) in guard result != nil else {
