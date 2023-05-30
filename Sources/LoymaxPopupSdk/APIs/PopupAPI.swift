@@ -20,8 +20,8 @@ open class PopupAPI {
      - parameter completion: completion handler to receive the data and the error objects
      */
     @discardableResult
-    open class func viewPopup(confirmRequest: ConfirmRequest? = nil, apiResponseQueue: DispatchQueue = OpenAPIClientAPI.apiResponseQueue, completion: @escaping ((_ data: Void?, _ error: Error?) -> Void)) -> RequestTask {
-        return viewPopupWithRequestBuilder(confirmRequest: confirmRequest).execute(apiResponseQueue) { result in
+    open class func popupConfirm(confirmRequest: ConfirmRequest? = nil, apiResponseQueue: DispatchQueue = OpenAPIClientAPI.apiResponseQueue, completion: @escaping ((_ data: Void?, _ error: Error?) -> Void)) -> RequestTask {
+        return popupConfirmWithRequestBuilder(confirmRequest: confirmRequest).execute(apiResponseQueue) { result in
             switch result {
             case .success:
                 completion((), nil)
@@ -41,7 +41,7 @@ open class PopupAPI {
      - parameter confirmRequest: (body)  (optional)
      - returns: RequestBuilder<Void> 
      */
-    open class func viewPopupWithRequestBuilder(confirmRequest: ConfirmRequest? = nil) -> RequestBuilder<Void> {
+    open class func popupConfirmWithRequestBuilder(confirmRequest: ConfirmRequest? = nil) -> RequestBuilder<Void> {
         let localVariablePath = "/popup/confirm"
         let localVariableURLString = OpenAPIClientAPI.basePath + localVariablePath
         let localVariableParameters = JSONEncodingHelper.encodingParameters(forEncodableObject: confirmRequest)
