@@ -1,0 +1,603 @@
+openapi: 3.0.3
+info:
+  title: 'Smart Communication Api'
+  description: 'Описание методов для работы с пушами'
+  version: 1.0.0
+servers:
+  -
+    url: 'https://smcmaster-api.smc.nsk-k8s.loymax.net/api/'
+paths:
+  /token:
+    post:
+      operationId: getAuthToken
+      tags:
+        - Authorization
+      summary: 'Авторизация в системе SMC'
+      description: "Получение токена для авторизации в системе SMC."
+      requestBody:
+        description: Учетные данные для получения токена.
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                data:
+                  properties:
+                    attributes:
+                      properties:
+                        username:
+                          type: string
+                          description: Имя пользователя.
+                          example: "user@example.com"
+                        password:
+                          type: string
+                          description: Пароль пользователя.
+                          example: "password123"
+                      required:
+                        - username
+                        - password
+                      type: object
+                  type: object
+              type: object
+      responses:
+        '200':
+          description: Успешное получение токена.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/AuthTokenResponse'
+                  - $ref: '#/components/schemas/SMCErrorResponse'
+        '400':
+          description: Ошибка в запросе.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMCErrorResponse'
+        '401':
+          description: Клиент не найден.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMCErrorResponse'
+        '403':
+          description: Доступ запрещен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMCErrorResponse'
+        '404':
+          description: Неверный формат данных.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMCErrorResponse'
+        '422':
+          description: Ошибка валидации данных.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMCErrorResponse'
+        '429':
+          description: Превышение лимита запросов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitErrorResponse'
+        '500':
+          description: Внутренняя ошибка сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMCErrorResponse'
+  /customer/{id}/channel:
+    get:
+      tags:
+        - Customer
+      summary: 'Получить из Смарта статус разрешения на уведомления клиенту'
+      description: |
+        Возвращает разрешения на уведомления клиенту.
+        При запросе коллекции сущностей в /GET параметрах можно передать:
+        `?sort=[{"attribute": "name", "direction": "asc"},...]`
+        Это JSON-массив объектов с условиями сортировки.
+        - **attribute**: Имя атрибута модели.
+        - **direction**: Направление сортировки. Возможные значения: `asc`, `desc`.
+      operationId: getCustomerNotificationStatus
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Внешний идентификатор клиента (client_external_id)'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Основная часть ответа будет содержать массив `data`, который в свою очередь будет состоять\n                    из объектов, где в `attributes` будет содержаться информация о типе (`type`), подтипе (`subtype`) уведомлений,\n                    а также статус активности (`value`)"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/CustomerNotificationStatus'
+                  - $ref: '#/components/schemas/SMCErrorResponse'
+        '404':
+          description: 'Клиент не найден'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMCErrorResponse'
+    post:
+      tags:
+        - Customer
+      summary: 'Передать в Смарт статус разрешения на уведомления клиенту'
+      description: 'Изменить/добавить подписки клиента на каналы коммуникаций'
+      operationId: setCustomerNotificationStatus
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Внешний идентификатор клиента (client_external_id)'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: "Атрибут должен содрежать пары ключ-значение, где ключ - это тип канала коммуникации,\n                   а значение - это статус разрешения на уведомления клиенту"
+        content:
+          application/json:
+            schema:
+              properties:
+                data:
+                  properties:
+                    attributes:
+                      properties:
+                        email:
+                          type: string
+                          example: 'N'
+                        push:
+                          type: string
+                          example: 'Y'
+                        sms:
+                          type: string
+                          example: 'Y'
+                      type: object
+                  type: object
+              type: object
+      responses:
+        '200':
+          description: 'Успешный ответ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMCSuccessResponse'
+        '404':
+          description: 'Клиент не найден'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMCErrorResponse'
+  /customer/{id}/subscribe:
+    get:
+      tags:
+        - Customer
+      summary: 'Получить из Смарта статус подписки клиента на категории рассылок'
+      description: |
+        Внимание! Если клиент не подписан на какую-либо из категорий - она не будет отображаться (`data.attributes` динамическое).
+        В случае полного отсутствия подписок у клиента - вернется пустой массив `attributes`.
+      operationId: getCustomerSubscriptionCategories
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Внешний идентификатор клиента (client_external_id)'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Успешный ответ с данными'
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/CustomerSubscriptionCategories'
+                  - $ref: '#/components/schemas/SMCErrorResponse'
+        '404':
+          description: 'Клиент не найден'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMCErrorResponse'
+    patch:
+      tags:
+        - Customer
+      summary: 'Передать в Смарт статус подписки на категории'
+      description: 'Метод для управления подпиской клиента по его идентификатору в мастер-системе. Подписка на категории рассылок, по которым код не передан не обновляется.'
+      operationId: modifyCustomerSubscriptionCategories
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Внешний идентификатор клиента (client_external_id)'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: |
+          В `categories` передаются одна или более категорий рассылок, содержащей пары ключ-значение, где ключ - это код категории рассылки (`mailingCode`),
+          а значение - это объект, содержащий пары ключ-значение, где ключ - это тип массовых рассылок, а значение - статус подписки (`Y` - подписан, `N` - отписан, `ND` - удалить из категории).
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModifySubscriptionRequest'
+      responses:
+        '200':
+          description: 'Успешный ответ'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMCSuccessResponse'
+        '404':
+          description: 'Клиент не найден'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMCErrorResponse'
+  /customer/{id}/contact:
+    post:
+      tags:
+        - Customer
+      summary: 'Передать в Смарт полученный от APNS/FCM/rustore/HuaweiPushToolkit токен'
+      description: 'Вставить контактные данные клиента'
+      operationId: addCustomerToken
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Внешний идентификатор клиента (client_external_id)'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 'Тело запроса должно содержать массив контактных данных, где `type` и `value` обязательные.'
+        content:
+          application/json:
+            schema:
+              properties:
+                data:
+                  properties:
+                    attributes:
+                      properties:
+                        contacts:
+                          type: array
+                          items:
+                            properties:
+                              type:
+                                type: string
+                                example: push
+                              subtype:
+                                type: string
+                                example: whatsapp
+                              value:
+                                type: string
+                                example: 1ab23456-7891-23cd-efg4-5678hi91g2k3
+                              device:
+                                type: string
+                                example: apple
+                            type: object
+                      type: object
+                  type: object
+              type: object
+      responses:
+        '204':
+          description: 'Успешный ответ без содержимого'
+  /communication/{type}/events:
+    post:
+      tags:
+        - Communication
+      summary: 'Передать в Смарт факт показа (открытия) пуша'
+      description: 'Передать факт показа (открытия) пуша'
+      operationId: logPushEvent
+      parameters:
+        -
+          name: type
+          in: path
+          description: 'Тип коммуникации (email/sms/push/bot)'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: "Тело запроса должно содержать массив статусов, где type: delivered/open/click/spam/unsubscribe,\n              message_id - идентификатор сообщения, external_client_id - идентификатор клиента."
+              properties:
+                data:
+                  type: array
+                  items:
+                    properties:
+                      type:
+                        type: string
+                        example: delivered
+                      message_id:
+                        type: string
+                        example: '123:456789'
+                      external_client_id:
+                        type: string
+                        example: 123Identifier456
+                    type: object
+              type: object
+      responses:
+        '200':
+          description: 'Успешный ответ'
+          content:
+            application/json:
+              schema:
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                type: object
+        '400':
+          description: 'Неверный тип коммуникации'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SMCErrorResponse'
+components:
+ securitySchemes:
+  bearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+ schemas:
+    AuthTokenResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            type:
+              type: string
+              description: Тип данных ответа.
+              example: user
+            id:
+              type: string
+              description: Идентификатор пользователя.
+              example: '3'
+            attributes:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                  description: JWT токен для авторизации.
+                  example: 'Bearer header.payload.signature'
+                user:
+                  type: object
+                  description: Информация о пользователе.
+                  properties:
+                    id:
+                      type: integer
+                      description: Идентификатор пользователя.
+                      example: 3
+                    username:
+                      type: string
+                      description: Имя пользователя.
+                      example: test
+                    email:
+                      type: string
+                      description: Email пользователя.
+                      example: username@example.com
+        errors:
+          type: array
+          description: Массив ошибок, если они есть.
+          items:
+            $ref: '#/components/schemas/SMCErrorDetails'
+        links:
+          $ref: '#/components/schemas/SMCLinks'
+    SMCErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          description: Список ошибок.
+          items:
+            $ref: '#/components/schemas/SMCErrorDetails'
+    RateLimitErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          description: Ошибки ограничения нагрузки на API.
+          items:
+            type: object
+            properties:
+              status:
+                type: integer
+                description: Код состояния HTTP.
+                example: 429
+              title:
+                type: string
+                description: Описание ошибки.
+                example: "Too Many Attempts."
+    SMCErrorDetails:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: Код состояния HTTP.
+          example: 400
+        title:
+          type: string
+          description: Сообщение об ошибке.
+          example: "Invalid Attribute"
+        validation:
+          type: object
+          description: |
+            Дополнительная информация об ошибках валидации.
+            Возможные ключи зависят от полей `requestBody` соответствующего эндпоинта.
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            username:
+              - "Имя пользователя обязательно."
+            password:
+              - "Пароль слишком короткий."
+    SMCSuccessResponse:
+      type: object
+      properties:
+        data:
+          properties:
+            attributes:
+              properties:
+                status:
+                  type: string
+                  example: success
+              type: object
+          type: object
+    SMCLinks:
+      type: object
+      description: |
+        Ссылки для навигации. Все поля (`self`, `first`, `last`) являются опциональными.
+      properties:
+        self:
+          type: string
+          description: Ссылка на текущий ресурс.
+          example: /user/
+        first:
+          type: string
+          example: '/channel-subscriptions?page%5Blimit%5D=10'
+        last:
+          type: string
+          example: '/channel-subscriptions?page%5Blimit%5D=10'
+    CustomerNotificationStatus:
+      type: object
+      properties:
+        links:
+          $ref: '#/components/schemas/SMCLinks'
+        data:
+          type: array
+          items:
+            properties:
+              type:
+                type: string
+                example: channel-subscriptions
+              id:
+                type: string
+                example: ''
+              attributes:
+                properties:
+                  type:
+                    type: string
+                    example: email
+                  subtype:
+                    type: string
+                    example: ''
+                  value:
+                    type: integer
+                    example: 1
+                type: object
+            type: object
+        meta:
+          $ref: '#/components/schemas/SMCMeta'
+    CustomerSubscriptionCategories:
+      type: object
+      properties:
+        links:
+          $ref: '#/components/schemas/SMCLinks'
+        data:
+          type: array
+          items:
+            properties:
+              type:
+                type: string
+                example: subscribe
+              id:
+                type: string
+                example: '122'
+              attributes:
+                properties:
+                  id:
+                    type: integer
+                    example: 122
+                  mailing_cat_id:
+                    type: integer
+                    example: 122
+                  name:
+                    type: string
+                    example: 'Имя категории'
+                  description:
+                    type: string
+                    example: 'Описание категории'
+                  status_email:
+                    type: string
+                    example: 'Y'
+                  status_push:
+                    type: string
+                    example: 'N'
+                  status_sms:
+                    type: string
+                    example: 'Y'
+                type: object
+              links:
+                $ref: '#/components/schemas/SMCLinks'
+            type: object
+        meta:
+          $ref: '#/components/schemas/SMCMeta'
+    SMCMeta:
+      type: object
+      description: |
+        Метаинформация о коллекции.
+      properties:
+        count:
+          type: integer
+          description: Количество элементов на текущей странице.
+          example: 1
+        total:
+          type: integer
+          description: Общее количество элементов.
+          example: 1
+    ModifySubscriptionRequest:
+      type: object
+      properties:
+        data:
+          properties:
+            attributes:
+              properties:
+                categories:
+                  properties:
+                    mailingCode:
+                      properties:
+                        email:
+                          type: string
+                          example: 'N'
+                        sms:
+                          type: string
+                          example: 'Y'
+                        push:
+                          type: string
+                          example: ND
+                        'messenger:telegram':
+                          type: string
+                          example: 'N'
+                        'messenger:whatsapp':
+                          type: string
+                          example: 'Y'
+                      type: object
+                  type: object
+              type: object
+          type: object
+security:
+  -
+    bearerAuth: []
+tags:
+  -
+    name: Authorization
+    description: Authorization
+  -
+    name: Customer
+    description: Customer
+  -
+    name: Communication
+    description: Communication

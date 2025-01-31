@@ -16,7 +16,7 @@ AppDelegate.swift -> application -> `OpenAPIClientAPI.basePath = ""`
 `import LoymaxPopupSdk`  
 
 Пример:  
-`OpenAPIClientAPI.basePath = "https://api.loymaxsc.net"`  
+`OpenAPIClientAPI.basePath = "https://api.loymaxsc.net/api"`  
 
 Пример использования методов:
 * перед вызовом методов, необходимо установить ("Bearer *******" можно получить с помощью https://api.loymaxsc.net/token):
